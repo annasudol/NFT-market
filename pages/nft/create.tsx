@@ -3,16 +3,13 @@
 import type { NextPage } from 'next'
 import { ChangeEvent, useState } from 'react';
 import { BaseLayout } from '@ui'
-import { Switch } from '@headlessui/react'
-import Link from 'next/link'
-import { NftMeta } from '@_types/nft';
+import { NftMeta, PinataRes } from '@_types/nft';
+
 import axios from 'axios';
 import { useWeb3 } from '@providers/web3';
 
 const NftCreate: NextPage = () => {
-  const {ethereum} = useWeb3()
-  const [nftURI, setNftURI] = useState("");
-  const [hasURI, setHasURI] = useState(false);
+  const {ethereum} = useWeb3();
   const [nftMeta, setNftMeta] = useState<NftMeta>({
     name: "",
     description: "",
@@ -23,6 +20,50 @@ const NftCreate: NextPage = () => {
       {trait_type: "speed", value: "0"},
     ]
   });
+
+  const getSignedData = async () => {
+    const messageToSign = await axios.get("/api/verify");
+    const accounts = await ethereum?.request({method: "eth_requestAccounts"}) as string[];
+    const account = accounts[0];
+
+    const signedData = await ethereum?.request({
+      method: "personal_sign",
+      params: [JSON.stringify(messageToSign.data), account, messageToSign.data.id]
+    })
+
+    return {signedData, account};
+  }
+
+  const handleImage = async (e: ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) {
+      console.error("Select a file");
+      return;
+    }
+
+    const file = e.target.files[0];
+    const buffer = await file.arrayBuffer();
+    const bytes = new Uint8Array(buffer);
+    
+    try {
+      const {signedData, account} = await getSignedData();
+      const res = await axios.post("/api/verify-image", {
+        address: account,
+        signature: signedData,
+        bytes,
+        contentType: file.type,
+        fileName: file.name.replace(/\.[^/.]+$/, "")
+      });
+
+      const data = res.data as PinataRes;
+
+      setNftMeta({
+        ...nftMeta,
+        image: `${process.env.NEXT_PUBLIC_PINATA_DOMAIN}/ipfs/${data.IpfsHash}`
+      });
+    } catch(e: any) {
+      console.error(e.message);
+    }
+  }
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -42,15 +83,14 @@ const NftCreate: NextPage = () => {
 
   const createNft = async () => {
     try {
-      const messageToSign = await axios.get("/api/verify");
-      const accounts = await ethereum?.request({method: "eth_requestAccounts"}) as string[];
-      const account = accounts[0];
-      const signedData = await ethereum?.request({method: 'personal_sign', params: [JSON.stringify(messageToSign.data), account, messageToSign.data.id]});
+      const {signedData, account} = await getSignedData();
+      
       await axios.post("/api/verify", {
         address: account,
         signature: signedData,
         nft: nftMeta
       })
+
     } catch (e: any) {
       console.error(e.message);
     }
@@ -59,99 +99,6 @@ const NftCreate: NextPage = () => {
   return (
     <BaseLayout>
       <div>
-        <div className="py-4">
-          { !nftURI &&
-            <div className="flex">
-              <div className="mr-2 font-bold underline">Do you have meta data already?</div>
-              <Switch
-                checked={hasURI}
-                onChange={() => setHasURI(!hasURI)}
-                className={`${hasURI ? 'bg-indigo-900' : 'bg-indigo-700'}
-                  relative inline-flex flex-shrink-0 h-[28px] w-[64px] border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
-              >
-                <span className="sr-only">Use setting</span>
-                <span
-                  aria-hidden="true"
-                  className={`${hasURI ? 'translate-x-9' : 'translate-x-0'}
-                    pointer-events-none inline-block h-[24px] w-[24px] rounded-full bg-white shadow-lg transform ring-0 transition ease-in-out duration-200`}
-                />
-              </Switch>
-            </div>
-          }
-        </div>
-        { (nftURI || hasURI) ?
-          <div className="md:grid md:grid-cols-3 md:gap-6">
-            <div className="md:col-span-1">
-              <div className="px-4 sm:px-0">
-                <h3 className="text-lg font-medium leading-6 text-gray-900">List NFT</h3>
-                <p className="mt-1 text-sm text-gray-600">
-                  This information will be displayed publicly so be careful what you share.
-                </p>
-              </div>
-            </div>
-            <div className="mt-5 md:mt-0 md:col-span-2">
-              <form>
-                <div className="shadow sm:rounded-md sm:overflow-hidden">
-                  { hasURI &&
-                    <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
-                      <div>
-                        <label htmlFor="uri" className="block text-sm font-medium text-gray-700">
-                          URI Link
-                        </label>
-                        <div className="mt-1 flex rounded-md shadow-sm">
-                          <input
-                            onChange={(e) => setNftURI(e.target.value)}
-                            type="text"
-                            name="uri"
-                            id="uri"
-                            className="focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded-none rounded-r-md sm:text-sm border-gray-300"
-                            placeholder="http://link.com/data.json"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  }
-                  { nftURI &&
-                    <div className='mb-4 p-4'>
-                      <div className="font-bold">Your metadata: </div>
-                      <div>
-                        <Link href={nftURI}>
-                          <a className="underline text-indigo-600">
-                            {nftURI}
-                          </a>
-                        </Link>
-                      </div>
-                    </div>
-                  }
-                  <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
-                    <div>
-                      <label htmlFor="price" className="block text-sm font-medium text-gray-700">
-                        Price (ETH)
-                      </label>
-                      <div className="mt-1 flex rounded-md shadow-sm">
-                        <input
-                          type="number"
-                          name="price"
-                          id="price"
-                          className="focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded-none rounded-r-md sm:text-sm border-gray-300"
-                          placeholder="0.8"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                    <button
-                      type="button"
-                      className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                      List
-                    </button>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-        :
         <div className="md:grid md:grid-cols-3 md:gap-6">
           <div className="md:col-span-1">
             <div className="px-4 sm:px-0">
@@ -200,9 +147,6 @@ const NftCreate: NextPage = () => {
                       Brief description of NFT
                     </p>
                   </div>
-                  {/* Has Image? */}
-                  { false ?
-                    <img src="https://eincode.mypinata.cloud/ipfs/QmaQYCrX9Fg2kGijqapTYgpMXV7QPPzMwGrSRfV9TvTsfM/Creature_1.png" alt="" className="h-40" /> :
                     <div>
                     <label className="block text-sm font-medium text-gray-700">Image</label>
                     <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
@@ -232,6 +176,7 @@ const NftCreate: NextPage = () => {
                               name="file-upload"
                               type="file"
                               className="sr-only"
+                              onChange={handleImage}
                             />
                           </label>
                           <p className="pl-1">or drag and drop</p>
@@ -240,7 +185,7 @@ const NftCreate: NextPage = () => {
                       </div>
                     </div>
                   </div>
-                  }
+                  
                   <div className="grid grid-cols-6 gap-6">
                     { nftMeta.attributes.map(attribute =>
                       <div key={attribute.trait_type} className="col-span-6 sm:col-span-6 lg:col-span-2">
@@ -275,7 +220,7 @@ const NftCreate: NextPage = () => {
             </form>
           </div>
         </div>
-        }
+        
       </div>
     </BaseLayout>
   )
