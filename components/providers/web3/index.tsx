@@ -43,7 +43,7 @@ const Web3Provider: FunctionComponent = ({children}) => {
           provider,
           contract: signedContract as unknown as NftMarketContract,
           isLoading: false
-        }))
+        }));
       } catch(e: any) {
         console.error("Please, install web3 wallet");
         setWeb3Api((api) => createWeb3State({

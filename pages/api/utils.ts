@@ -1,19 +1,20 @@
-import { NextApiRequest } from 'next';
-import { withIronSession, Session } from 'next-iron-session';
+import { ethers } from "ethers";
+import { NextApiRequest, NextApiResponse } from "next";
+import { withIronSession, Session } from "next-iron-session";
+const targetNetwork = process.env.NEXT_PUBLIC_NETWORK_ID as keyof NETWORK;
+
 import contract from "../../public/contracts/NftMarket.json";
-import { NextApiResponse } from 'next';
-import { ethers } from "ethers"
-const abi = contract.abi;
-import { NftMarketContract } from '@_types/nftMarketContract';
+import { NftMarketContract } from "@_types/nftMarketContract";
+
 const NETWORKS = {
   "5777": "Ganache"
 }
 
 type NETWORK = typeof NETWORKS;
-
-const targetNetwork = process.env.NEXT_PUBLIC_NETWORK_ID as keyof NETWORK;
-
 export const contractAddress = contract["networks"][targetNetwork]["address"];
+
+const abi = contract.abi;
+
 
 export function withSession(handler: any) {
   return withIronSession(handler, {
@@ -28,11 +29,17 @@ export function withSession(handler: any) {
 export const addressCheckMiddleware = async (req: NextApiRequest & { session: Session }, res: NextApiResponse) => {
   return new Promise(async (resolve, reject) => {
     const message = req.session.get("message-session");
-    const provider = new ethers.providers.JsonRpcBatchProvider("HTTP://127.0.0.1:7545");
-    debugger;
-    const contract = new ethers.Contract(contractAddress, abi, provider) as unknown as NftMarketContract;
-    const name = await contract.name();
-    console.log(contract, 'contract')
-    return message ? resolve("Correct Address") : reject("Wrong Address")
+    const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:7545");
+    const contract = new ethers.Contract(
+      contractAddress,
+      abi,
+      provider
+    ) as unknown as NftMarketContract;
+
+    if (message) {
+      resolve("Correct Address");
+    } else {
+      reject("Wrong Address");
+    }
   })
 }

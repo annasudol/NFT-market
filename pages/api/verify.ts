@@ -8,7 +8,6 @@ export default withSession(async (req: NextApiRequest & { session: Session }, re
   if (req.method === "POST") {
     try {
       const { body } = req;
-      console.log(body)
       const nft = body.nft as NftMeta
 
       if (!nft.name || !nft.description || !nft.attributes) {
