@@ -38,18 +38,12 @@ export const addressCheckMiddleware = async (req: NextApiRequest & { session: Se
     ) as unknown as NftMarketContract;
     let nonce: string | Buffer = "\x19Ethereum signed Message: \n" + JSON.stringify(message).length + JSON.stringify(message);
     nonce = util.keccak(Buffer.from(nonce, "utf-8"));
-    console.log(nonce, 'nonce');
     const { v, r, s } = util.fromRpcSig(req.body.signature);
-    console.log(v, r, s, ' v, r, s');
     const pubKey = util.ecrecover(util.toBuffer(nonce), v, r, s);
     const addrBuffer = util.pubToAddress(pubKey);
-    const address = util.bufferToHex(pubKey);
-    console.log(address, 'addrBuffer')
-
-
-
+    const address = util.bufferToHex(addrBuffer);
     if (message) {
-      resolve("Correct Address");
+      resolve("CorrectAddress");
     } else {
       reject("Wrong Address");
     }
