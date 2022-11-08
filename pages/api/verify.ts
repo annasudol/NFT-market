@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { Session } from "next-iron-session";
 import { NextApiRequest, NextApiResponse } from "next";
-import { withSession, contractAddress } from "./utils";
+import { withSession, contractAddress, addressCheckMiddleware } from "./utils";
 import { NftMeta } from "@_types/nft";
 
 export default withSession(async (req: NextApiRequest & { session: Session }, res: NextApiResponse) => {
@@ -12,12 +12,13 @@ export default withSession(async (req: NextApiRequest & { session: Session }, re
       const nft = body.nft as NftMeta
 
       if (!nft.name || !nft.description || !nft.attributes) {
-        res.status(422).send({ message: "Some of the form data are missing!" });
+        return res.status(422).send({ message: "Some of the form data are missing!" });
       }
+      await addressCheckMiddleware(req, res);
 
-      res.status(200).send({ message: "Nft has been created" });
+      return res.status(200).send({ message: "Nft has been created" });
     } catch {
-      res.status(422).send({ message: "Cannot create JSON" });
+      return res.status(422).send({ message: "Cannot create JSON" });
     }
   } else if (req.method === "GET") {
     try {
@@ -27,9 +28,9 @@ export default withSession(async (req: NextApiRequest & { session: Session }, re
 
       res.json(message);
     } catch {
-      res.status(422).send({ message: "Cannot generate a message!" });
+      return res.status(422).send({ message: "Cannot generate a message!" });
     }
   } else {
-    res.status(200).json({ message: "Invalid api route" });
+    return res.status(200).json({ message: "Invalid api route" });
   }
 })
