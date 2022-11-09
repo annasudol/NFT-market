@@ -35,11 +35,10 @@ export default withSession(async (
         );
 
         const fileRes = await axios.post("https://api.pinata.cloud/pinning/pinFileToIPFS", formData, {
-            maxBodyLength: Infinity,
             headers: {
-                "Content-Type": `multipart/form-data; boundary=${formData.getBoundary()}`,
-                pinata_api_key: pinataApiKey,
-                pinata_secret_api_key: pinataSecretApiKey
+                'pinata_api_key': `a5322b306731a117fc2a`,
+                'pinata_secret_api_key': `6b6ae2bb50c20389c779c79e8047aa9971f522fd0bd649ea1407476f31dbff2d`,
+                "Content-Type": "multipart/form-data"
             }
         });
 

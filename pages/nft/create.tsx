@@ -46,19 +46,32 @@ const NftCreate: NextPage = () => {
     
     try {
       const {signedData, account} = await getSignedData();
-      const res = await axios.post("/api/verify-image", {
-        address: account,
-        signature: signedData,
-        bytes,
-        contentType: file.type,
-        fileName: file.name.replace(/\.[^/.]+$/, "")
-      });
-
-      const data = res.data as PinataRes;
+      const formData = new FormData();
+      formData.append("file", file);
+      const resFile = await axios({
+        method: "post",
+        url: "https://api.pinata.cloud/pinning/pinFileToIPFS",
+        data: formData,
+        headers: {
+            'pinata_api_key': `a5322b306731a117fc2a`,
+            'pinata_secret_api_key': `6b6ae2bb50c20389c779c79e8047aa9971f522fd0bd649ea1407476f31dbff2d`,
+            "Content-Type": "multipart/form-data"
+        },
+    });
+    console.log(resFile, 'resFile')
+      // const res = await axios.post("/api/verify-image", {
+      //   address: account,
+      //   signature: signedData,
+      //   file: bytes,
+      //   contentType: file.type,
+      //   fileName: file.name.replace(/\.[^/.]+$/, "")resFile
+      // });
+      // console.log(res, "res")
+      // const data = res.data as PinataRes;
 
       setNftMeta({
         ...nftMeta,
-        image: `${process.env.NEXT_PUBLIC_PINATA_DOMAIN}/ipfs/${data.IpfsHash}`
+        image: `${process.env.NEXT_PUBLIC_PINATA_DOMAIN}/ipfs/${resFile.data.IpfsHash}`
       });
     } catch(e: any) {
       console.error(e.message);
@@ -85,11 +98,12 @@ const NftCreate: NextPage = () => {
     try {
       const {signedData, account} = await getSignedData();
       
-      await axios.post("/api/verify", {
+      const res= await axios.post("/api/verify", {
         address: account,
         signature: signedData,
         nft: nftMeta
       })
+      console.log(res, "/api/verify")
 
     } catch (e: any) {
       console.error(e.message);

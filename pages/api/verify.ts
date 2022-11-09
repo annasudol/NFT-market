@@ -9,7 +9,7 @@ export default withSession(async (req: NextApiRequest & { session: Session }, re
     try {
       const { body } = req;
       const nft = body.nft as NftMeta
-      if (!nft.name || !nft.description || !nft.attributes) {
+      if (!nft.name || !nft.description || !nft.attributes || !nft.image) {
         return res.status(422).send({ message: "Some of the form data are missing!" });
       }
       await addressCheckMiddleware(req, res);
@@ -24,7 +24,7 @@ export default withSession(async (req: NextApiRequest & { session: Session }, re
           pinata_secret_api_key: pinataSecretApiKey
         }
       });
-
+      console.log(jsonRes, 'jsonRes')
       return res.status(200).send(jsonRes.data);
     } catch {
       return res.status(422).send({ message: "Cannot create JSON" });
