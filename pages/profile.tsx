@@ -60,7 +60,6 @@ const Profile: NextPage = () => {
                     </div>
                   </div>
                 </div>
-
                 <section className="mt-8 pb-16" aria-labelledby="gallery-heading">
                   <ul
                     role="list"
@@ -100,8 +99,6 @@ const Profile: NextPage = () => {
                 </section>
               </div>
             </main>
-
-            {/* Details sidebar */}
             <aside className="hidden w-96 bg-white p-8 border-l border-gray-200 overflow-y-auto lg:block">
             { activeNft &&
               <div className="pb-16 space-y-6">
@@ -119,18 +116,6 @@ const Profile: NextPage = () => {
                     </div>
                   </div>
                 </div>
-                <div>
-                  <h3 className="font-medium text-gray-900">Information</h3>
-                  <dl className="mt-2 border-t border-b border-gray-200 divide-y divide-gray-200">
-                    {activeNft.meta.attributes.map((attr) => (
-                      <div key={attr.trait_type} className="py-3 flex justify-between text-sm font-medium">
-                        <dt className="text-gray-500">{attr.trait_type}: </dt>
-                        <dd className="text-gray-900 text-right">{attr.value}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                </div>
-
                 <div className="flex">
                   <button
                     type="button"

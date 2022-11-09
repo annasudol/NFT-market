@@ -1,11 +1,5 @@
-import {
-  ContractTransaction,
-  ContractInterface,
-  BytesLike as Arrayish,
-  BigNumber,
-  BigNumberish,
-} from 'ethers';
-import { EthersContractContextV5 } from 'ethereum-abi-types-generator';
+import { ContractTransaction, ContractInterface, BytesLike as Arrayish, BigNumber, BigNumberish } from "ethers";
+import { EthersContractContextV5 } from "ethereum-abi-types-generator";
 
 export type ContractContext = EthersContractContextV5<
   NftMarketContract,
@@ -55,11 +49,11 @@ export interface ContractCallOverrides {
   gasLimit?: number;
 }
 export type NftMarketContractEvents =
-  | 'Approval'
-  | 'ApprovalForAll'
-  | 'NftItemCreated'
-  | 'OwnershipTransferred'
-  | 'Transfer';
+  | "Approval"
+  | "ApprovalForAll"
+  | "NftItemCreated"
+  | "OwnershipTransferred"
+  | "Transfer";
 export interface NftMarketContractEventsContext {
   Approval(...parameters: any): EventFilter;
   ApprovalForAll(...parameters: any): EventFilter;
@@ -68,36 +62,36 @@ export interface NftMarketContractEventsContext {
   Transfer(...parameters: any): EventFilter;
 }
 export type NftMarketContractMethodNames =
-  | 'new'
-  | 'approve'
-  | 'balanceOf'
-  | 'getApproved'
-  | 'isApprovedForAll'
-  | 'listingPrice'
-  | 'name'
-  | 'owner'
-  | 'ownerOf'
-  | 'renounceOwnership'
-  | 'safeTransferFrom'
-  | 'safeTransferFrom'
-  | 'setApprovalForAll'
-  | 'supportsInterface'
-  | 'symbol'
-  | 'tokenURI'
-  | 'transferFrom'
-  | 'transferOwnership'
-  | 'setListingPrice'
-  | 'getNftItem'
-  | 'listedItemsCount'
-  | 'tokenURIExists'
-  | 'totalSupply'
-  | 'tokenByIndex'
-  | 'tokenOfOwnerByIndex'
-  | 'getAllNftsOnSale'
-  | 'getOwnedNfts'
-  | 'mintToken'
-  | 'buyNft'
-  | 'placeNftOnSale';
+  | "new"
+  | "approve"
+  | "balanceOf"
+  | "getApproved"
+  | "isApprovedForAll"
+  | "listingPrice"
+  | "name"
+  | "owner"
+  | "ownerOf"
+  | "renounceOwnership"
+  | "safeTransferFrom"
+  | "safeTransferFrom"
+  | "setApprovalForAll"
+  | "supportsInterface"
+  | "symbol"
+  | "tokenURI"
+  | "transferFrom"
+  | "transferOwnership"
+  | "setListingPrice"
+  | "getNftItem"
+  | "listedItemsCount"
+  | "tokenURIExists"
+  | "totalSupply"
+  | "tokenByIndex"
+  | "tokenOfOwnerByIndex"
+  | "getAllNftsOnSale"
+  | "getOwnedNfts"
+  | "mintToken"
+  | "buyNft"
+  | "placeNftOnSale";
 export interface ApprovalEventEmittedResponse {
   owner: string;
   approved: string;
@@ -140,7 +134,7 @@ export interface NftMarketContract {
    * StateMutability: nonpayable
    * Type: constructor
    */
-  'new'(overrides?: ContractTransactionOverrides): Promise<ContractTransaction>;
+  "new"(overrides?: ContractTransactionOverrides): Promise<ContractTransaction>;
   /**
    * Payable: false
    * Constant: false
@@ -149,11 +143,7 @@ export interface NftMarketContract {
    * @param to Type: address, Indexed: false
    * @param tokenId Type: uint256, Indexed: false
    */
-  approve(
-    to: string,
-    tokenId: BigNumberish,
-    overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>;
+  approve(to: string, tokenId: BigNumberish, overrides?: ContractTransactionOverrides): Promise<ContractTransaction>;
   /**
    * Payable: false
    * Constant: true
@@ -161,10 +151,7 @@ export interface NftMarketContract {
    * Type: function
    * @param owner Type: address, Indexed: false
    */
-  balanceOf(
-    owner: string,
-    overrides?: ContractCallOverrides
-  ): Promise<BigNumber>;
+  balanceOf(owner: string, overrides?: ContractCallOverrides): Promise<BigNumber>;
   /**
    * Payable: false
    * Constant: true
@@ -172,10 +159,7 @@ export interface NftMarketContract {
    * Type: function
    * @param tokenId Type: uint256, Indexed: false
    */
-  getApproved(
-    tokenId: BigNumberish,
-    overrides?: ContractCallOverrides
-  ): Promise<string>;
+  getApproved(tokenId: BigNumberish, overrides?: ContractCallOverrides): Promise<string>;
   /**
    * Payable: false
    * Constant: true
@@ -184,11 +168,7 @@ export interface NftMarketContract {
    * @param owner Type: address, Indexed: false
    * @param operator Type: address, Indexed: false
    */
-  isApprovedForAll(
-    owner: string,
-    operator: string,
-    overrides?: ContractCallOverrides
-  ): Promise<boolean>;
+  isApprovedForAll(owner: string, operator: string, overrides?: ContractCallOverrides): Promise<boolean>;
   /**
    * Payable: false
    * Constant: true
@@ -217,19 +197,14 @@ export interface NftMarketContract {
    * Type: function
    * @param tokenId Type: uint256, Indexed: false
    */
-  ownerOf(
-    tokenId: BigNumberish,
-    overrides?: ContractCallOverrides
-  ): Promise<string>;
+  ownerOf(tokenId: BigNumberish, overrides?: ContractCallOverrides): Promise<string>;
   /**
    * Payable: false
    * Constant: false
    * StateMutability: nonpayable
    * Type: function
    */
-  renounceOwnership(
-    overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>;
+  renounceOwnership(overrides?: ContractTransactionOverrides): Promise<ContractTransaction>;
   /**
    * Payable: false
    * Constant: false
@@ -282,10 +257,7 @@ export interface NftMarketContract {
    * Type: function
    * @param interfaceId Type: bytes4, Indexed: false
    */
-  supportsInterface(
-    interfaceId: Arrayish,
-    overrides?: ContractCallOverrides
-  ): Promise<boolean>;
+  supportsInterface(interfaceId: Arrayish, overrides?: ContractCallOverrides): Promise<boolean>;
   /**
    * Payable: false
    * Constant: true
@@ -300,10 +272,7 @@ export interface NftMarketContract {
    * Type: function
    * @param tokenId Type: uint256, Indexed: false
    */
-  tokenURI(
-    tokenId: BigNumberish,
-    overrides?: ContractCallOverrides
-  ): Promise<string>;
+  tokenURI(tokenId: BigNumberish, overrides?: ContractCallOverrides): Promise<string>;
   /**
    * Payable: false
    * Constant: false
@@ -326,10 +295,7 @@ export interface NftMarketContract {
    * Type: function
    * @param newOwner Type: address, Indexed: false
    */
-  transferOwnership(
-    newOwner: string,
-    overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>;
+  transferOwnership(newOwner: string, overrides?: ContractTransactionOverrides): Promise<ContractTransaction>;
   /**
    * Payable: false
    * Constant: false
@@ -337,10 +303,7 @@ export interface NftMarketContract {
    * Type: function
    * @param newPrice Type: uint256, Indexed: false
    */
-  setListingPrice(
-    newPrice: BigNumberish,
-    overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>;
+  setListingPrice(newPrice: BigNumberish, overrides?: ContractTransactionOverrides): Promise<ContractTransaction>;
   /**
    * Payable: false
    * Constant: true
@@ -348,10 +311,7 @@ export interface NftMarketContract {
    * Type: function
    * @param tokenId Type: uint256, Indexed: false
    */
-  getNftItem(
-    tokenId: BigNumberish,
-    overrides?: ContractCallOverrides
-  ): Promise<NftitemResponse>;
+  getNftItem(tokenId: BigNumberish, overrides?: ContractCallOverrides): Promise<NftitemResponse>;
   /**
    * Payable: false
    * Constant: true
@@ -366,10 +326,7 @@ export interface NftMarketContract {
    * Type: function
    * @param tokenURI Type: string, Indexed: false
    */
-  tokenURIExists(
-    tokenURI: string,
-    overrides?: ContractCallOverrides
-  ): Promise<boolean>;
+  tokenURIExists(tokenURI: string, overrides?: ContractCallOverrides): Promise<boolean>;
   /**
    * Payable: false
    * Constant: true
@@ -384,10 +341,7 @@ export interface NftMarketContract {
    * Type: function
    * @param index Type: uint256, Indexed: false
    */
-  tokenByIndex(
-    index: BigNumberish,
-    overrides?: ContractCallOverrides
-  ): Promise<BigNumber>;
+  tokenByIndex(index: BigNumberish, overrides?: ContractCallOverrides): Promise<BigNumber>;
   /**
    * Payable: false
    * Constant: true
@@ -396,20 +350,14 @@ export interface NftMarketContract {
    * @param owner Type: address, Indexed: false
    * @param index Type: uint256, Indexed: false
    */
-  tokenOfOwnerByIndex(
-    owner: string,
-    index: BigNumberish,
-    overrides?: ContractCallOverrides
-  ): Promise<BigNumber>;
+  tokenOfOwnerByIndex(owner: string, index: BigNumberish, overrides?: ContractCallOverrides): Promise<BigNumber>;
   /**
    * Payable: false
    * Constant: true
    * StateMutability: view
    * Type: function
    */
-  getAllNftsOnSale(
-    overrides?: ContractCallOverrides
-  ): Promise<NftitemResponse[]>;
+  getAllNftsOnSale(overrides?: ContractCallOverrides): Promise<NftitemResponse[]>;
   /**
    * Payable: false
    * Constant: true
@@ -437,10 +385,7 @@ export interface NftMarketContract {
    * Type: function
    * @param tokenId Type: uint256, Indexed: false
    */
-  buyNft(
-    tokenId: BigNumberish,
-    overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>;
+  buyNft(tokenId: BigNumberish, overrides?: ContractTransactionOverrides): Promise<ContractTransaction>;
   /**
    * Payable: true
    * Constant: false

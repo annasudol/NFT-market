@@ -1,38 +1,37 @@
-import { useHooks } from "@providers/web3"
-
+import { useHooks } from "@providers/web3";
 
 export const useAccount = () => {
   const hooks = useHooks();
   const swrRes = hooks.useAccount();
 
   return {
-    account: swrRes
-  }
-}
+    account: swrRes,
+  };
+};
 
 export const useNetwork = () => {
   const hooks = useHooks();
   const swrRes = hooks.useNetwork();
 
   return {
-    network: swrRes
-  }
-}
+    network: swrRes,
+  };
+};
 
 export const useListedNfts = () => {
   const hooks = useHooks();
   const swrRes = hooks.useListedNfts();
 
   return {
-    nfts: swrRes
-  }
-}
+    nfts: swrRes,
+  };
+};
 
 export const useOwnedNfts = () => {
   const hooks = useHooks();
   const swrRes = hooks.useOwnedNfts();
 
   return {
-    nfts: swrRes
-  }
-}
+    nfts: swrRes,
+  };
+};

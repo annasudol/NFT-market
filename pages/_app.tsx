@@ -1,8 +1,6 @@
-
-
-import '../styles/globals.css'
-import type { AppProps } from 'next/app'
-import { Web3Provider } from '@providers'
+import "../styles/globals.css";
+import type { AppProps } from "next/app";
+import { Web3Provider } from "@providers";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -11,7 +9,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <Component {...pageProps} />
       </Web3Provider>
     </>
-  )
+  );
 }
 
-export default MyApp
+export default MyApp;
