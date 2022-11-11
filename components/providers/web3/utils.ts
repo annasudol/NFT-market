@@ -38,21 +38,21 @@ export const createWeb3State = ({ ethereum, provider, contract, isLoading }: Web
   };
 };
 
-const NETWORK_ID = process.env.NEXT_PUBLIC_NETWORK_ID;
+const NEXT_PUBLIC_SECRET_NETWORK_ID = process.env.NEXT_PUBLIC_NEXT_PUBLIC_SECRET_NETWORK_ID;
 
 export const loadContract = async (
   name: string, // NftMarket
   provider: providers.Web3Provider
 ): Promise<Contract> => {
-  if (!NETWORK_ID) {
+  if (!NEXT_PUBLIC_SECRET_NETWORK_ID) {
     return Promise.reject("Network ID is not defined!");
   }
 
   const res = await fetch(`/contracts/${name}.json`);
   const Artifact = await res.json();
 
-  if (Artifact.networks[NETWORK_ID].address) {
-    const contract = new ethers.Contract(Artifact.networks[NETWORK_ID].address, Artifact.abi, provider);
+  if (Artifact.networks[NEXT_PUBLIC_SECRET_NETWORK_ID].address) {
+    const contract = new ethers.Contract(Artifact.networks[NEXT_PUBLIC_SECRET_NETWORK_ID].address, Artifact.abi, provider);
 
     return contract;
   } else {

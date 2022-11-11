@@ -4,12 +4,15 @@ import type { NextPage } from "next";
 import { ChangeEvent, useState } from "react";
 import { BaseLayout } from "@ui";
 import { NftMeta, PinataRes } from "@_types/nft";
-
+import Link from 'next/link'
 import axios from "axios";
 import { useWeb3 } from "@providers/web3";
+export const pinata_api_key = process.env.NEXT_PUBLIC_PINATA_API_KEY as string;
+export const pinata_secret_api_key = process.env.NEXT_PUBLIC_PINATA_SECRET_API_KEY as string;
 
 const NftCreate: NextPage = () => {
   const { ethereum } = useWeb3();
+  const [ipfsHash, setIpfsHash] = useState<string>();
   const [nftMeta, setNftMeta] = useState<NftMeta>({
     name: "",
     description: "",
@@ -43,8 +46,8 @@ const NftCreate: NextPage = () => {
         url: "https://api.pinata.cloud/pinning/pinFileToIPFS",
         data: formData,
         headers: {
-          pinata_api_key: `a5322b306731a117fc2a`,
-          pinata_secret_api_key: `6b6ae2bb50c20389c779c79e8047aa9971f522fd0bd649ea1407476f31dbff2d`,
+          pinata_api_key,
+          pinata_secret_api_key,
           "Content-Type": "multipart/form-data",
         },
       });
@@ -73,7 +76,9 @@ const NftCreate: NextPage = () => {
         signature: signedData,
         nft: nftMeta,
       });
+      res.status === 200 && setIpfsHash(res.data.IpfsHash)
       console.log(res, "/api/verify");
+      // https://gateway.pinata.cloud/ipfs/QmRFYMjfbuwpwaDQeW7Raoi2sDhAfMw3oevVwpjGMC7DKf
     } catch (e: any) {
       console.error(e.message);
     }
@@ -165,19 +170,21 @@ const NftCreate: NextPage = () => {
                 )}
                 </div>
                 <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
+                  
+                  {ipfsHash ? <><p>successfully created added NFT to IPFS</p><Link href={`https://gateway.pinata.cloud/ipfs/${ipfsHash}`}>IPFS link</Link></> :
                   <button
                     onClick={createNft}
+                    disabled={!nftMeta.image || !nftMeta.description || !nftMeta.name}
                     type="button"
-                    className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-25 disabled:focus:none disabled:hover:none"
                   >
                     create NFT
-                  </button>
+                  </button>}
                 </div>
               </div>
             </form>
           </div>
         </div>
-
     </BaseLayout>
   );
 };
