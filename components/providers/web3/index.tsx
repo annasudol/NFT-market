@@ -3,6 +3,7 @@ import { createDefaultState, createWeb3State, loadContract, Web3State } from "./
 import { ethers } from "ethers";
 import { MetaMaskInpageProvider } from "@metamask/providers";
 import { NftMarketContract } from "@_types/nftMarketContract";
+import { isCommunityResourcable } from "@ethersproject/providers";
 
 const pageReload = () => {
   window.location.reload();
@@ -34,8 +35,8 @@ const Web3Provider: FunctionComponent = ({ children }) => {
     async function initWeb3() {
       try {
         const provider = new ethers.providers.Web3Provider(window.ethereum as any);
-        const contract = await loadContract("NftMarket", provider);
-
+        const contract = await loadContract("MyNFT", provider);
+        console.log(contract)
         const signer = provider.getSigner();
         const signedContract = contract.connect(signer);
         setTimeout(() => {
@@ -46,7 +47,7 @@ const Web3Provider: FunctionComponent = ({ children }) => {
           createWeb3State({
             ethereum: window.ethereum,
             provider,
-            contract: signedContract as unknown as NftMarketContract,
+            contract: signedContract as unknown as any,
             isLoading: false,
           })
         );

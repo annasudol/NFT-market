@@ -38,7 +38,8 @@ export const createWeb3State = ({ ethereum, provider, contract, isLoading }: Web
   };
 };
 
-const NEXT_PUBLIC_SECRET_NETWORK_ID = process.env.NEXT_PUBLIC_NEXT_PUBLIC_SECRET_NETWORK_ID;
+const NEXT_PUBLIC_SECRET_NETWORK_ID = process.env.NEXT_PUBLIC_SECRET_NETWORK_ID;
+export const contractAddress = process.env.NEXT_PUBLIC_NFT_CONTRACT as string;
 
 export const loadContract = async (
   name: string, // NftMarket
@@ -48,11 +49,11 @@ export const loadContract = async (
     return Promise.reject("Network ID is not defined!");
   }
 
-  const res = await fetch(`/contracts/${name}.json`);
+  const res = await fetch(`/contracts/NftMarket.json`);
   const Artifact = await res.json();
 
-  if (Artifact.networks[NEXT_PUBLIC_SECRET_NETWORK_ID].address) {
-    const contract = new ethers.Contract(Artifact.networks[NEXT_PUBLIC_SECRET_NETWORK_ID].address, Artifact.abi, provider);
+  if (contractAddress) {
+    const contract = new ethers.Contract(contractAddress, Artifact.abi, provider);
 
     return contract;
   } else {
